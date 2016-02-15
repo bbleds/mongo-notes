@@ -4,7 +4,10 @@ const PORT = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const MONGODB_URL = "mongodb://ben:ben@ds059135.mongolab.com:59135/bbleds-test-database";
-
+const MONGO_USR = process.env.MONGO_USR;
+const MONGO_PSWD = process.env.MONGO_PSWD;
+console.log("mongo user " + MONGO_USR);
+console.log("mongo pass " + MONGO_PSWD);
 
 const mySchema = mongoose.Schema({
 	name: String,
