@@ -1,7 +1,25 @@
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const MONGODB_URL = "mongodb://ben:ben@ds059135.mongolab.com:59135/bbleds-test-database";
 
+
+const mySchema = mongoose.Schema({
+	name: String,
+	species: String
+})
+const speciesModel = mongoose.model("test", mySchema)
+
+
+
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+app.use(bodyParser.json());
+
+app.set("view engine", "jade")
 
 app.get("/", (req, res)=>
 {
@@ -14,7 +32,26 @@ app.get("/contact", (req, res)=>
 	res.send("<h1>HALLO, this is thy contact page</h1>")
 })
 
-app.listen(PORT, ()=>
+app.get("/postit", (req, res)=>
 {
-	console.log("app listening on PORT 3000");
+	res.render("postit")
+})
+
+app.post("/postit", (req, res)=>
+{
+	console.log(req.body);
+
+	const formSubmit = new speciesModel({name: req.body.name, species: req.body.species})
+	formSubmit.save(function (err, object) {
+    if (err) return console.error(err);
+    console.log("saved that junk boyyyyyy");
+  });
+	res.send("THANKS GUY!!!")
+})
+
+const dbase = mongoose.connection;
+mongoose.connect(MONGODB_URL);
+mongoose.connection.on("open", () =>
+{
+    app.listen(PORT, ()=> console.log(`server listening on port ${PORT}, ya filthy animal`));
 })
